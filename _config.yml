@@ -1,21 +1,50 @@
-remote_theme: pages-themes/time-machine@v0.2.0
-plugins:
-- jekyll-remote-theme # add this line to the plugins list if you already have one
-title: Disha Devalkar
-description: >
-Final-year Information Technology Engineering student graduating in 2026
-with a strong interest in software development, frontend technologies,
-and problem-solving. Skilled in working with modern digital tools and
-technologies including React, JavaScript, HTML, CSS, Canva,
-Microsoft Excel, and PowerPoint.
+name: Deploy Jekyll site to Pages
 
-Passionate about building user-friendly applications and continuously
-learning new technologies.
+on:
+push:
+branches:
+- main
 
-An active and confident individual with good communication, teamwork,
-and coordination skills gained through academic projects, presentations,
-and college activities.
+permissions:
+contents: read
+pages: write
+id-token: write
 
-Known for being adaptable, creative, and quick to learn.Interested in
-opportunities that encourage innovation, collaboration, and professional
-growth in the tech industry.
+concurrency:
+group: pages
+cancel-in-progress: true
+
+jobs:
+build:
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: Checkout
+    uses: actions/checkout@v4
+
+  - name: Setup Pages
+    uses: actions/configure-pages@v5
+
+  - name: Build with Jekyll
+    uses: actions/jekyll-build-pages@v1
+
+  - name: Upload artifact
+    uses: actions/upload-pages-artifact@v3
+```
+
+deploy:
+needs: build
+
+```
+runs-on: ubuntu-latest
+
+environment:
+  name: github-pages
+  url: ${{ steps.deployment.outputs.page_url }}
+
+steps:
+  - name: Deploy to GitHub Pages
+    id: deployment
+    uses: actions/deploy-pages@v4
+```
